@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Flexbox trial{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+<title>Example</title>
+<!-- La seguente pagina copia quella del jog, ma con l'implementazione della libreria flex-box,
+ la quale permette di gestire il layout degli elementi della pagina in base alla dimensione della finestra-->
+
+<div class= "container">
+    <div class="item1">
+        <div>
+            <div class="form-check">
+              <input name="gruppo1" type="radio" id="Base" checked>
+              <label for="radio1">Base Frame</label>
+            </div>
+            <div class="form-check">
+              <input name="gruppo1" type="radio" id="Tool">
+              <label for="radio2">Tool Frame</label>
+            </div>
+            <br></br>
+        </div>
+        <div>  
+            <a id="1" class="submit-btn" onclick="joint_click(1)">J1</a> 
+            <input id="7" type="text" value="" class="joint_box-flex" readonly><p></p>
+            <a id="2" class="submit-btn" onclick="joint_click(2)">J2</a> 
+            <input id="8"type="text" value="" class="joint_box-flex" readonly><p></p> 
+            <a id="3" class="submit-btn" onclick="joint_click(3)">J3</a> 
+            <input id="9" type="text" value="" class="joint_box-flex" readonly><p></p>
+            <a id="4" class="submit-btn" onclick="joint_click(4)">J4</a> 
+            <input id="10" type="text" value="" class="joint_box-flex" readonly><p></p>    
+            <a id="5" class="submit-btn" onclick="joint_click(5)">J5</a> 
+            <input id="11" type="text" value="" class="joint_box-flex" readonly><p></p>
+            <a id="6" class="submit-btn" onclick="joint_click(6)">J6</a> 
+            <input id="12" type="text" value="" class="joint_box-flex" readonly><p></p>
+            <br></br>
+            <a id="minus" class="plus-min-btn" style="background-color:#c50f02" onclick="plus_min_function('minus')">-</a> <a id="plus" class="plus-min-btn" style = "margin:5px; background-color:#1c9101" onclick="plus_min_function()" >+</a> 
+            <br></br>
+            <p></p>
+            <span class="badge rounded-pill bg-primary" style = "margin:45px;">Speed</span>
+            <br></br>
+            <input type="range" class="form-range" style = "color:#00748d" id="SpeedRange">
+            <br></br>
+            <a class="submit-btn" onclick="set_home()">Set this position as home</a> 
+        </div>
+    </div>
+
+
+    <div class="item2">
+        <iframe src="http://127.0.0.1:8000/map" height="750px" width="750px"></iframe>
+    </div>
+
+</div>
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4.9/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+
+<script type="text/javascript">
+
+  //Add {current_posj[0]} to the value of the text boxes
+
+  var i = false
+  var old_selected_joint = 0  
+  
+  function joint_click(x) {
+
+    if(i == false){
+      document.getElementById(x).style.background = "white";
+      document.getElementById(x).style.color = "#00748d";
+      document.getElementById(x).style.border = "1px solid #00748d";
+      i = true
+      old_selected_joint = x //update the selected joint
+    }
+
+    else{            
+      //deselect the old selected joint
+      document.getElementById(old_selected_joint).style.background = "#00748d";
+      document.getElementById(old_selected_joint).style.color = "white";
+      document.getElementById(old_selected_joint).style.border = "1px solid #white";
+      i = false //in case the actual selected joint is equal to the old selected joint
+
+      if(old_selected_joint != x){
+        //select the new one
+        document.getElementById(x).style.background = "white";
+        document.getElementById(x).style.color = "#00748d";
+        document.getElementById(x).style.border = "1px solid #00748d";
+        old_selected_joint = x
+        i = true
+      }
+    }
+  }
+
+  async function plus_min_function(id){
+    
+    const sito = {{ url_for('pages.jog_user_function')|tojson }}
+    let jog_data = new FormData()
+    //jog_data.append("name", "jog_data");
+    jog_data.append("joint_axis", old_selected_joint - 1);
+    let speed_percentage = document.getElementById("SpeedRange").value;
+    
+    let frame = 2; //neutral
+    if(document.getElementById('Base').checked == true) {   
+      frame = 0;
+    } 
+
+    else if(document.getElementById('Tool').checked == true) {   
+      frame = 1;
+    } 
+
+    jog_data.append("frame", frame);
+
+    if(id == "minus"){
+      speed_percentage = speed_percentage * (-1)
+
+    }
+
+    jog_data.append("speed", speed_percentage);
+
+    var object = {}
+    jog_data.forEach(function(value,key){
+      object[key] = value;
+    })
+    var json_data = JSON.stringify(object)
+
+    console.log(jog_data)
+    console.log(json_data)
+    
+    fetch(sito, {
+      "method": "POST",
+      "body": jog_data,
+    })
+
+    console.log(jog_data)
+
+    //$.post(sito, {jog_data}) // {"Content-Type": 'application/json'}
+      
+  };
+
+  function ros_web_socket(){
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+  
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+  
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+  
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
+
+    var listener = new ROSLIB.Topic({
+      ros : ros,
+      name : '/joint_states',
+      messageType : 'sensor_msgs/JointState'
+
+    });
+  
+    listener.subscribe(function(result) {
+      console.log('Received message on ' + listener.name + ': ' + result.position);
+      for (let i = 7; i <= 12; i += 1) {
+        document.getElementById(i).value = result.position[i-7].toFixed(2)
+      }
+    });
+  }
+
+  window.onload = function() {
+    ros_web_socket();
+  };
+
+</script>
+{% endblock content %}

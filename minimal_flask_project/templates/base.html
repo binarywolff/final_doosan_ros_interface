@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <title>Message Board - {% block title %}{% endblock title %}</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='/image/favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<h1>Nexman Robotics Program</h1>
+{%include ("_navigation.html")%}
+<section>
+  <header>
+    {% block header %}{% endblock header %}
+  </header>
+  <main>
+    {% block content %}<p>Have fun with Doosan Robotics!</p>{% endblock content %}
+  </main>
+</section>
+</body>
+</html>

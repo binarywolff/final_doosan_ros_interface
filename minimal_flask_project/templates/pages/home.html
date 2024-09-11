@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+                                                                      
+{% block header %}
+
+{% endblock header %}
+
+{% block content %}
+<br/><br/>
+  <!-- -->
+
+  <div class="container">
+    <div class="buttons1">
+      <a id="connect" class="connect-btn" onclick="connect_to_robot()">Connect the robot</a>
+    </div>
+  </div>
+  <br/><br/>
+
+  <div class="container">
+    <div class="buttons1">
+      <a class="stop-btn" onclick="stop()" style="background-color=teal">Stop<span class="sr-only"></a>
+    </div>
+
+    <div class="buttons2">
+      <a class="green-btn" onmousedown="move_home(true)" onmouseup="move_home(false)">Go Home</a>  
+    </div>
+  </div>  
+  <br/><br/>
+  <div class="container">
+    <div class="buttons1">
+      <a class="submit-btn" onclick="get_current_position()">Get current position</a>  
+    </div>
+    <div class="buttons2">
+      <a class="submit-btn" onclick="copy_text()">Copy position as a posj</a>  
+    </div>
+  </div>  
+  <br/><br/><br/>
+
+  <a id="J1" class="digital-output-btn" onclick="copy_text()">J1</a> 
+  <input id="39" type="text" value="" class="joint_box" >
+  <a id="J2" class="digital-output-btn" onclick="">J2</a> 
+  <input id="40"type="text" value="" class="joint_box" readonly>
+  <a id="J3" class="digital-output-btn" onclick="">J3</a> 
+  <input id="41" type="text" value="" class="joint_box" readonly>
+  <a id="J4" class="digital-output-btn" onclick="">J4</a> 
+  <input id="42" type="text" value="" class="joint_box" readonly>
+  <a id="J5" class="digital-output-btn" onclick="">J5</a> 
+  <input id="43" type="text" value="" class="joint_box" readonly>
+  <a id="J6" class="digital-output-btn" onclick="">J6</a> 
+  <input id="44" type="text" value="" class="joint_box" readonly>
+
+  <br/><br/><br/>
+
+  <h4 class="text-center" style="color:black"><strong>Controller digital input</strong></h4>
+  <br/>
+  <div class="container">
+    <div class="buttons1">
+      <a id="1" class="digital-output-btn">1</a> 
+      <a id="2" style="margin:5px;"class="digital-output-btn">2</a> 
+      <a id="3" style="margin:5px;"class="digital-output-btn">3</a> 
+      <a id="4" style="margin:5px;"class="digital-output-btn">4</a> 
+      <a id="5" style="margin:5px;"class="digital-output-btn">5</a> 
+    </div>
+  
+    <div class="buttons2">
+      <a id="6" style="margin:5px;"class="digital-output-btn">6</a> 
+      <a id="7" style="margin:5px;"class="digital-output-btn">7</a> 
+      <a id="8" style="margin:5px;"class="digital-output-btn">8</a> 
+    </div>
+  </div> 
+
+  <br /><br /><br />
+
+  <div class="container">
+    <div class="buttons1">
+      <a id="9"  style="margin:5px;"class="digital-output-btn">9</a> 
+      <a id="10" style="margin:5px;"class="digital-output-btn">10</a> 
+      <a id="11" style="margin:5px;"class="digital-output-btn">11</a> 
+      <a id="12" style="margin:5px;"class="digital-output-btn">12</a> 
+      <a id="13" style="margin:5px;"class="digital-output-btn">13</a> 
+    </div>
+
+    <div class="buttons2">
+      <a id="14" style="margin:5px;"class="digital-output-btn">14</a> 
+      <a id="15" style="margin:5px;"class="digital-output-btn">15</a> 
+      <a id="16" style="margin:5px;"class="digital-output-btn">16</a>
+    </div>
+  </div> 
+  <br /><br /><br />
+  <h4 class="text-center" style="color:black"><strong> Flange digital input</strong></h4>
+  <br/>
+  <div class="container">
+    <a id="17" class="digital-output-btn">1</a> 
+    <a id="18" style="margin:5px;" class="digital-output-btn">2</a> 
+    <a id="19" style="margin:5px;" class="digital-output-btn">3</a> 
+    <a id="20" style="margin:5px;"class="digital-output-btn" >4</a> 
+    <a id="21" style="margin:5px;"class="digital-output-btn" >5</a> 
+    <a id="22" style="margin:5px;"class="digital-output-btn" >6</a> 
+  </div>
+
+  <br /><br /><br />
+  <h4> Controller digital output</h4>
+  <br/>
+  <div class="container">
+    <div class="buttons1">
+      <a id="23" class="submit-btn" onclick="output_click(23)">1</a> 
+      <a id="24" style="margin:5px;"class="submit-btn" onclick="output_click(24)">2</a> 
+      <a id="25" style="margin:5px;"class="submit-btn" onclick="output_click(25)">3</a> 
+      <a id="26" style="margin:5px;"class="submit-btn" onclick="output_click(26)">4</a> 
+      <a id="27" style="margin:5px;"class="submit-btn" onclick="output_click(27)">5</a> 
+    </div>
+  
+    <div class="buttons2">
+      <a id="28" style="margin:5px;"class="submit-btn" onclick="output_click(28)">6</a> 
+      <a id="29" style="margin:5px;"class="submit-btn" onclick="output_click(29)">7</a> 
+      <a id="30" style="margin:5px;"class="submit-btn" onclick="output_click(30)">8</a> 
+    </div>
+  </div> 
+  <br /><br /><br />
+
+  <div class="container">
+    <div class="buttons1">
+      <a id="31" style="margin:5px;"class="submit-btn" onclick="output_click(31)">9</a> 
+      <a id="32" style="margin:5px;"class="submit-btn" onclick="output_click(32)">10</a> 
+      <a id="33" style="margin:5px;"class="submit-btn" onclick="output_click(33)">11</a> 
+      <a id="34" style="margin:5px;"class="submit-btn" onclick="output_click(34)">12</a> 
+      <a id="35" style="margin:5px;"class="submit-btn" onclick="output_click(35)">13</a> 
+    </div>
+
+    <div class="buttons2">
+      <a id="36" style="margin:5px;"class="submit-btn" onclick="output_click(36)">14</a> 
+      <a id="37" style="margin:5px;"class="submit-btn" onclick="output_click(37)">15</a> 
+      <a id="38" style="margin:5px;"class="submit-btn" onclick="output_click(38)">16</a>
+    </div>
+  </div>  
+  <br /><br /><br />
+  <br /><br /><br />
+  <br /><br /><br />
+
+  
+  <script type="text/javascript">
+    
+    let connection = false;
+    let output_on = new Array(16).fill(false);
+
+    async function stop(){
+      await fetch("/stop")
+      wait(1000)
+      await fetch("/pausa")
+    }
+    
+    async function homing(){
+      //Legge la posizione attuale di Home, la trasforma in json e chiama la funzione fetch_homing()
+      await fetch('/static/home_position.json')
+      .then(response => response.json())
+      .then(jsonResponse => fetch_homing(jsonResponse))
+    }
+
+    async function move_home(go_value){
+      await fetch('/static/home_position.json')
+      .then(response => response.json())
+      //.then(jsonResponse => console.log(jsonResponse))
+      .then(jsonResponse => fetch_homing(jsonResponse, go_value))
+    }
+    
+    async function fetch_homing(jsonResponse, go_value){
+      //Fa la fetch per chiamare la funzione go_home() 
+      
+      if(go_value){
+        await fetch("/resume")
+        var json_position = jsonResponse
+        console.log("SIII" + json_position)
+        await fetch('/go_home', {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          "method": "POST",
+          "body": JSON.stringify(json_position),
+        })
+      }
+
+      else if(!go_value){
+        console.log("NOOO" + jsonResponse)
+        await fetch("/pausa")
+      }
+    }
+
+
+    async function get_current_position(){
+      //{joint_position[i]}
+      //if({{joint_position}} == null) return;
+
+      let joint_position =  {{joint_position}};    //[0,2,0,1,0,1,];
+      //let joint_position = [0,2,0,1,0,1,];
+      for(let i=0; i<6; i++){
+        document.getElementById(i+39).value = joint_position[i];
+      }
+    }
+
+    async function get_digital_input(){
+
+      //if({{digital_input}} == null) return;
+      
+      var digital_input = [0,1,0,1,1,0,1,1,0,1,0,1,0,1,0,1] //{{digital_input}}// 
+      //var digital_input_flange = [0,0,1,1,0,0]
+
+      for (let i = 1; i <= 16; i += 1) {
+        if(digital_input[i-1] == 1 ){
+          document.getElementById(i).style.background = "white";
+          document.getElementById(i).style.color = "#00748d";
+          document.getElementById(i).style.border = "1px solid #00748d";
+        }
+
+        else{
+          document.getElementById(i).style.background = "#00748d";
+          document.getElementById(i).style.color = "white";
+          document.getElementById(i).style.border = "1px solid #white";
+        }
+      };
+
+      for (let i = 1; i <= 6; i += 1) {
+        if(digital_input_flange[i-1] == 1 ){
+          let x = i + 16;
+          document.getElementById(x).style.background = "white";
+          document.getElementById(x).style.color = "#00748d";
+          document.getElementById(x).style.border = "1px solid #00748d";
+        }
+
+        else{
+          let x = i + 16;
+          document.getElementById(x).style.background = "#00748d";
+          document.getElementById(x).style.color = "white";
+          document.getElementById(x).style.border = "1px solid #white";
+        }
+      };
+    }
+
+
+    async function output_click(x) {
+      var array_index = x -23 +1;
+      const set_output_URL = {{ url_for('pages.set_digital_output')|tojson }}
+      
+      if(!output_on[array_index]){
+        var element = {index :array_index, value :true }
+        await fetch(set_output_URL, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          "method": "POST",
+          "body": JSON.stringify(element),
+        })
+        //Cambia il colore del bottone solo se la fetch è completata correttamente
+        .then(document.getElementById(x).style.background = "white")
+        .then(document.getElementById(x).style.color = "#00748d")
+        .then(document.getElementById(x).style.border = "1px solid #00748d")
+        .then(output_on[array_index] = true);
+      }
+  
+      else {            
+        //data.append("value", "false")
+        console.log("json")
+        var element = {index :array_index, value :false }
+        await fetch(set_output_URL, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          "method": "POST",
+          "body": JSON.stringify(element),
+        })
+        .then(document.getElementById(x).style.background = "#00748d")
+        .then(document.getElementById(x).style.color = "white")
+        .then(document.getElementById(x).style.border = "1px solid #white")
+        .then(output_on[array_index] = false)
+      }
+    }
+
+    async function connect_to_robot(){
+      if (connection == false){
+        var element = {action: true}
+        await fetch('/connect_to_robot', {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          "method": "POST",
+          "body": JSON.stringify(element),
+        })
+        connection = true;
+      }
+
+      else if (connection == true){
+        var element = {action: false}
+        await fetch('/connect_to_robot', {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          "method": "POST",
+          "body": JSON.stringify(element),
+        })
+        connection = false;
+      }
+      document.getElementById("connect").value = "Disconnetere il robot";
+    }
+
+    //La seguente funzione può essere utile per copiare nella clipboard le posizioni dei giunti in formato: "posj(0, 0, 0, 0, 0, 0)"
+    function copy_text(){
+      //var current_posj = {{joint_position}};
+      var current_posj = [1,2,3,4,5,6]
+      var joint_pos_1 = current_posj[0];
+      var joint_pos_2 = current_posj[1];
+      var joint_pos_3 = current_posj[2];
+      var joint_pos_4 = current_posj[3];
+      var joint_pos_5 = current_posj[4];
+      var joint_pos_6 = current_posj[5];
+
+      var copy_text = "posj(" + joint_pos_1.toString() + "," + joint_pos_2.toString() + "," + joint_pos_3.toString() + ","+ joint_pos_4.toString() + ","+ joint_pos_5.toString() + ","+ joint_pos_6.toString() + ")"
+      //var copy_text = document.getElementById("39"); 
+      //copy_text.select();
+      navigator.clipboard.writeText(copy_text);
+
+      alert("Copied the text: " + copy_text);
+    }
+
+    //La seguente funzione può essere utile per copiare nella clipboard le posizioni dei giunti in formato: "posj(0, 0, 0, 0, 0, 0)"
+    //function copy_text(){
+    //  var copy_text = document.getElementById("39");
+    //  copy_text.select();
+    //  //navigator.clipboard.writeText(copy_text.value);
+//
+    //  alert("Copied the text: " + copy_text.value);
+    //}
+
+
+
+    async function fetch_errors(){
+      console.log("Attivo la funzione fetch-errorss()")
+      await fetch('/errors_notification')
+        .then(console.log("Vedo un errore!!!"))
+        .then(response => console.log(response))
+    }
+
+    window.addEventListener('load', function(){
+      //Il documento è stato caricato
+      var fetch_interval  = 100000 //5 secondi
+
+      //Invoca la richiesta ogni 5 secondi
+      setInterval(fetch_errors, fetch_interval)
+
+    })
+
+    window.onload = function() {
+      get_digital_input(); 
+    }
+
+  </script>
+  
+{% endblock content %}

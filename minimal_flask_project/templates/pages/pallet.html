@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block header %}
+<h2>{% block title %}Pallet program{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+  <div class="container">
+    <div class="buttons1">
+      <a class="green-btn" onclick="pallettizzazione()">Inizia Pallettizzazione</a>  
+    </div>
+
+    <div class="buttons2">
+      <a class="submit-btn" onclick="pausa()">Pausa</a>
+    </div>
+
+    <div class="buttons3">
+      <a class="green-btn" onclick="resume()">Ricomincia</a>
+    </div>
+
+    <!--<div class="buttons3">
+      <a class="stop-btn" onclick="stop()">Stop</a>
+    </div>-->
+    
+    <div class="buttons3">
+      <a class="stop-btn" onclick="ferma_programma()">Ferma Programma</a>
+    </div>
+    
+      </div>
+    </div>
+  <!--<p>Run the program by clicking here </p>
+  <br /><br /><br />
+  <p>
+  <p id="start"></p>
+  <p id="pausetta"></p>
+  <p id="restart"></p>
+  <p id="fermo"></p>
+  </p>-->
+
+  <script type="text/javascript">
+
+    function removeAllText(element) {
+      // loop through all the nodes of the element
+      var nodes = element.childNodes;  
+      for(var i = 0; i < nodes.length; i++) {  
+          var node = nodes[i];
+            // if it's a text node, remove it
+          if(node.nodeType == Node.TEXT_NODE) {  
+              node.parentNode.removeChild(node);  
+              i--; // have to update our incrementor since we just removed a node from childNodes
+            } else  
+          // if it's an element, repeat this process
+          if(node.nodeType == Node.ELEMENT_NODE) {
+                removeAllText(node);  
+          }
+      }
+    }
+  
+    async function pallettizzazione(){
+      console.log("richiamata pallettizzazione");
+      await fetch("/pallettizzazione")
+      //removeAllText(pausetta)
+      //removeAllText(restart)
+      //removeAllText(fermo)
+      //var start = document.getElementById("start").innerHTML = "Pallettizzazione in corso..."
+    }
+    
+    async function pausa(){
+      await fetch("/pausa")
+      //removeAllText(start)
+      //removeAllText(restart)
+      //removeAllText(fermo)
+      //var pausetta = document.getElementById("pausetta").innerHTML = "Pallettizzazione in pausa"
+    }
+
+    async function resume(){
+      await fetch("/resume")
+      //removeAllText(start)
+      //removeAllText(pausetta)
+      //removeAllText(fermo)
+      //var restart = document.getElementById("restart").innerHTML = "Pallettizzazione ricominciata"
+    }
+
+    async function stop(){
+      await fetch("/stop")
+      wait(1000)
+      await fetch("/pausa")
+      //removeAllText(start)
+      //removeAllText(pausetta)
+      //removeAllText(restart)
+      //var fermo = document.getElementById("fermo").innerHTML = "Pallettizzazione in fase di stop"
+    }
+
+    async function ferma_programma(){
+      await fetch("/stop")
+      wait(1000)
+      await fetch("/pausa")
+    }
+    
+  </script>
+ 
+{% endblock content %}
+

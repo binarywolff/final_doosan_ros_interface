@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Test{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+<body onload="init()">
+  <div id="map"></div>
+  <div id="urdf"></div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.js"></script>
+
+<script src="static/ColladaLoader.js"></script>
+<script src="static/ros3d.js"></script>
+
+
+<script type="text/javascript">
+
+  function init(){
+
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+  
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+  
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+  
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
+
+    // Create the main viewer.
+    var rosViewer = new ROS3D.Viewer({
+      divID : 'urdf',
+      width : 800,
+      height : 600,
+      antialias : true,
+    });
+
+    // Add a grid.
+    rosViewer.addObject(new ROS3D.Grid());
+
+    // Setup a client to listen to TFs.
+    var tfClient = new ROSLIB.TFClient({
+      ros : ros,
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0
+    });
+
+    //// Setup the URDF client.
+    var urdfClient = new ROS3D.UrdfClient({
+      ros : ros,
+      tfClient : tfClient,
+      path: 'https://raw.githubusercontent.com/PR2/pr2_common/melodic-devel/',
+      rootObject : rosViewer.scene,
+    });
+
+    //var urdfClient = new ROS3D.UrdfClient({
+    //  ros : ros,
+    //  tfClient : tfClient,
+    //  path: 'static/',
+    //  rootObject : rosViewer.scene,
+    //});
+  }
+
+</script>
+{% endblock content %}

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Jog{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+<!DOCTYPE html>
+<form> 
+
+  <div class="form-group">
+    <aside>
+      <iframe src="http://127.0.0.1:8000/map" style="margin:30px;" height="485px" width="600"></iframe>
+    </aside>   
+
+    <div>
+      <div class="form-check">
+        <input name="gruppo1" type="radio" id="Base" checked>
+        <label for="radio1">Base Frame</label>
+      </div>
+      <div class="form-check">
+        <input name="gruppo1" type="radio" id="Tool">
+        <label for="radio2">Tool Frame</label>
+      </div>
+    </div>
+    
+    <a id="1" class="submit-btn" onclick="joint_click(1)">J1</a> 
+    <input id="j1" type="text" value="{{current_posj[0]}}" class="joint_box" readonly>
+    <a id="7" class="submit-btn" onclick="joint_click(7)">X</a> <p></p>
+
+    <a id="2" class="submit-btn" onclick="joint_click(2)">J2</a> 
+    <input id="j2" type="text" value="{{current_posj[1]}}" class="joint_box" readonly>
+    <a id="8" class="submit-btn" onclick="joint_click(8)">Y</a> <p></p>
+
+    <a id="3" class="submit-btn" onclick="joint_click(3)">J3</a> 
+    <input id="j3" type="text" value="{{current_posj[2]}}" class="joint_box" readonly>
+    <a id="9" class="submit-btn" onclick="joint_click(9)">Z</a> <p></p>
+
+    <a id="4" class="submit-btn" onclick="joint_click(4)">J4</a> 
+    <input id="j4" type="text" value="{{current_posj[3]}}" class="joint_box" readonly>
+    <a id="10" class="submit-btn" onclick="joint_click(10)">Rx</a> <p></p>
+
+    <a id="5" class="submit-btn" onclick="joint_click(5)">J5</a> 
+    <input id="j5" type="text" value="{{current_posj[4]}}" class="joint_box" readonly>
+    <a id="11" class="submit-btn" onclick="joint_click(11)">Ry</a> <p></p>
+
+    <a id="6" class="submit-btn" onclick="joint_click(6)">J6</a> 
+    <input id="j6" type="text" value="{{current_posj[5]}}" class="joint_box" readonly>
+    <a id="12" class="submit-btn" onclick="joint_click(12)">Rz</a> <p></p>
+
+    <br></br>
+    <a id="minus" class="plus-min-btn" style="background-color:#c50f02" onmousedown="jog_go_stop(false, true)" onmouseup="jog_go_stop(false, false)">-</a>
+    <a id="plus" class="plus-min-btn" style="margin:5px; background-color:#1c9101" onmousedown="jog_go_stop(true, true)" onmouseup="jog_go_stop(true, false)">+</a> 
+    <br></br>
+    <p></p>
+    <span class="badge rounded-pill bg-primary" style = "margin:45px;">Speed</span>
+    <br></br>
+    <input type="range" class="form-range" style = "color:#00748d" id="SpeedRange">
+    <br></br>
+    <a class="submit-btn" onclick="set_home()">Set this position as home</a> 
+  </div>
+</form>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4.9/lib/eventemitter2.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+
+<script type="text/javascript">
+
+  //Add {current_posj[0]} to the value of the text boxes
+
+  var i = false
+  var old_selected_joint = 0  
+  
+  function joint_click(x) {
+
+    if(i == false){
+      document.getElementById(x).style.background = "white";
+      document.getElementById(x).style.color = "#00748d";
+      document.getElementById(x).style.border = "1px solid #00748d";
+      i = true
+      old_selected_joint = x //update the selected joint
+    }
+
+    else{            
+      //deselect the old selected joint
+      document.getElementById(old_selected_joint).style.background = "#00748d";
+      document.getElementById(old_selected_joint).style.color = "white";
+      document.getElementById(old_selected_joint).style.border = "1px solid #white";
+      i = false //in case the actual selected joint is equal to the old selected joint
+
+      if(old_selected_joint != x){
+        //select the new one
+        document.getElementById(x).style.background = "white";
+        document.getElementById(x).style.color = "#00748d";
+        document.getElementById(x).style.border = "1px solid #00748d";
+        old_selected_joint = x
+        i = true
+      }
+    }
+  }
+
+  //function fill_position_boxes(){
+  //  let joint_position =  {{current_posj}}; 
+  //  for (let i = 1; i <= 6; i ++) {
+  //    let joint_id = "j" + i.toString()
+  //    document.getElementById(joint_id).value = joint_position[i-1]
+  //  }
+  //}
+
+  async function plus_min_function(id){
+    
+    const sito = {{ url_for('pages.jog_user_function')|tojson }}
+    let jog_data = new FormData();
+    //jog_data.append("name", "jog_data");
+    jog_data.append("joint_axis", old_selected_joint - 1);
+    let speed_percentage = document.getElementById("SpeedRange").value;
+    
+    let frame = 2; //neutral
+    if(document.getElementById('Base').checked == true) {   
+      frame = 0;
+    } 
+
+    else if(document.getElementById('Tool').checked == true) {   
+      frame = 1;
+    } 
+
+    jog_data.append("frame", frame);
+
+    if(id == "minus"){
+      speed_percentage = speed_percentage * (-1)
+
+    }
+
+    jog_data.append("speed", speed_percentage);
+
+    var object = {}
+    jog_data.forEach(function(value,key){
+      object[key] = value;
+    })
+    var json_data = JSON.stringify(object)
+
+    console.log(jog_data)
+    console.log(json_data)
+    
+    fetch(sito, {
+      "method": "POST",
+      "body": jog_data,
+    })
+
+    console.log(jog_data)
+
+    //$.post(sito, {jog_data}) // {"Content-Type": 'application/json'}
+      
+  };
+
+  function ros_web_socket(){
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+  
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+  
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+    
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
+
+    var listener = new ROSLIB.Topic({
+      ros : ros,
+      name : '/joint_states',
+      messageType : 'sensor_msgs/JointState'
+
+    });
+  
+    listener.subscribe(function(result) {
+      //console.log('Received message on ' + listener.name + ': ' + result.position);
+      for (let i = 7; i <= 12; i += 1) {
+        document.getElementById(i).value = result.position[i-7].toFixed(2)
+      }
+    });
+  }
+
+  function jog_go_stop(id, go_value){
+    const sito = {{ url_for('pages.jog_user_function')|tojson }}
+    let jog_data = new FormData();
+    var json_msg = "";
+
+    //jog_data.append("name", "jog_data");
+    jog_data.append("joint_axis", old_selected_joint - 1);
+    json_msg["joint_axis"] = old_selected_joint - 1;
+    let speed_percentage = document.getElementById("SpeedRange").value;
+    
+    let frame = 2; //neutral
+    if(document.getElementById('Base').checked == true) {   
+      frame = 0;
+    } 
+
+    else if(document.getElementById('Tool').checked == true) {   
+      frame = 1;
+    } 
+
+    jog_data.append("frame", frame);
+    json_msg["frame"] = frame;
+
+    if(!id){
+      speed_percentage = speed_percentage * (-1)
+    }
+
+    if(go_value){
+      jog_data.append("speed", speed_percentage);
+      json_msg["speed"] = speed_percentage;
+    }
+
+    if(!go_value){
+      jog_data.append("speed", 0);
+      json_msg["speed"] = speed_percentage;
+    }
+
+    var object = {}
+    jog_data.forEach(function(value,key){
+      object[key] = value;
+    })
+    var json_data = JSON.stringify(object)
+
+    console.log(jog_data)
+    console.log(json_data)
+    
+    fetch("/jog_function", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      "method": "POST",
+      "body": json_data,
+    })
+
+    console.log(jog_data)
+  }
+
+  function set_home(){
+    current_posj = {{current_posj}}
+    //current_posj = [1,1,1, 1,1,1]
+    if (window.confirm("Sei sicuro di voler cambiare la posizione di Home con quella attuale del robot?")){
+      alert("Ovvia giù, te lo fo subito" + String.fromCodePoint(0x1F607))
+      var joint1 = document.getElementById("j1").value
+      var joint2 = document.getElementById("j2").value
+      var joint3 = document.getElementById("j3").value
+      var joint4 = document.getElementById("j4").value
+      var joint5 = document.getElementById("j5").value
+      var joint6 = document.getElementById("j6").value
+      var joint_position = {j1:joint1, j2:joint2, j3:joint3, j4:joint4, j5:joint5, j6:joint6} //get values from the joint boxes
+      position_json = JSON.stringify(joint_position)
+      fetch("/update_home_position", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        "method": "POST",
+        "body": position_json,
+      })
+    }
+    else{
+      alert("E allora perchè tumm'hai cliccato? Maremma buhaiola" + String.fromCodePoint(0x1F624))
+    }
+    
+  }
+
+  window.onload = function() {
+    ros_web_socket();
+  };
+
+</script>
+{% endblock content %}
