@@ -5,7 +5,7 @@ It provides a browser-based interface to **control the robot's motion**, **write
 
 ---
 
-## 🚀 Features
+## Features
 - Control the Doosan robot’s motion (joint and Cartesian commands) directly from the browser.
 - Write, save, and execute custom Python robot programs through the web UI.
 - Visualize the robot in 3D in real time with `ros3djs`.
@@ -28,10 +28,3 @@ It provides a browser-based interface to **control the robot's motion**, **write
   - three.js
   - roslib.js
   - ROS3D.js
-
-
-#### 2. Clone the Repository
-```bash
-git clone https://github.com/your-username/flask-doosan-ros.git
-cd flask-doosan-ros
-
