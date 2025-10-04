@@ -19,10 +19,16 @@ It provides a browser-based interface to **control the robot's motion**, **write
 
 #### 1. Prerequisites
 - Ubuntu 20.04 / 22.04  
-- ROS Noetic (ROS 1) or ROS 2 Humble  
+- ROS Noetic
 - Doosan ROS driver installed and running  
-- Python 3.8+  
-- Flask  
+- Python 3.x
+- Flask
+- rosbridge_server
+- JavaScript libraries:
+  - three.js
+  - roslib.js
+  - ROS3D.js
+
 
 #### 2. Clone the Repository
 ```bash
